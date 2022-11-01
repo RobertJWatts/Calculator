@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Calculator.css';
 
 
@@ -13,6 +13,13 @@ var result;           /*allow referencing ans*/
 function Calculator() {
 
   const [disp, setDisp] = useState('0');
+
+  useEffect(() => {
+    if (document.getElementById('screen').offsetWidth > 
+        document.getElementById('calculator-display').offsetWidth) {  /*stop display overflowing*/
+      setDisp('NaN');
+    }
+  });
 
   function updateDisp(op) {
     if (op === 'AC') {
@@ -177,12 +184,6 @@ function Calculator() {
           }
       }
     }
-  
-    if (document.getElementById('screen').offsetWidth*1.1 > 
-      document.getElementById('calculator-display').offsetWidth) { /*stop overflowing from display*/
-      setDisp('NaN');
-    }
-
   }
 
   function compute(input,futureop,opcount) {
