@@ -1,1 +1,1 @@
-## Basic calculator created with ReactJS available at https://robertjwatts84.github.io/Calculator/
+Basic calculator created with ReactJS available at https://robertjwatts84.github.io/Calculator/
