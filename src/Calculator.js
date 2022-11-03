@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import './Calculator.css';
 
-let dpcounter = 0;    /*to ensure no entry of e.g 0.1.1*/
-let opcounter = 0;    /*to compute when =2*/
-let anscounter = 0;   /*to stop entry of ans on first use*/
-let prevop = 0;       /*force next to not be an operator e.g stops entering +x*/
-let nextop = 0;       /*force next to be an operator e.g stops entering ans3*/
-let minuscounter = 0; /*stops too many minus signs*/
-let result;           /*allow referencing ans*/
-let zerocounter = 0;  /*stops entering 0003 but allows 0.1*/
-
 function Calculator() {
 
   const [disp, setDisp] = useState('0');
+
+  const [dpcounter, setDpc] = useState(0);        /*to ensure no entry of e.g 0.1.1*/
+  const [opcounter, setOpc] = useState(0);        /*to compute when =2*/
+  const [anscounter, setAnsc] = useState(0);      /*to stop entry of ans on first use*/
+  const [prevop, setPrevop] = useState(0);        /*force next to not be an operator e.g stops entering +x*/
+  const [nextop, setNextop] = useState(0);        /*force next to be an operator e.g stops entering ans3*/
+  const [minuscounter, setMinusc] = useState(0);  /*stops too many minus signs*/
+  const [zerocounter, setZeroc] = useState(0);    /*stops entering 0003 but allows 0.1*/
+  const [result, setResult] = useState(0);        /*allow referencing ans*/
 
   useEffect(() => {
     if (document.getElementById('screen').offsetWidth > 
@@ -23,20 +23,20 @@ function Calculator() {
 
   function clear() {
     setDisp('0');
-    prevop = 0;
-    nextop = 0;
-    dpcounter = 0;
-    opcounter = 0;
-    minuscounter = 0;
-    zerocounter = 0;
+    setPrevop(0);
+    setNextop(0);
+    setDpc(0);
+    setOpc(0);
+    setMinusc(0);
+    setZeroc(0);
     if (disp === 'NaN') {
-      anscounter = 0;
+      setAnsc(0);
     }
   }
 
   function isNaN() {
     if (disp === 'NaN') {
-      anscounter = 0;
+      setAnsc(0);
       return true;
     }
     return false;
@@ -46,16 +46,16 @@ function Calculator() {
     if (!isNaN()) {
       if (disp === '0') {
         setDisp(disp+'.')
-        dpcounter = 1;
-        prevop = 1;
+        setDpc(1);
+        setPrevop(1);
       }
       else {
         if (dpcounter === 0 && prevop === 0 && nextop === 0) {
           setDisp(disp+'.');
-          dpcounter = 1;
-          prevop = 1;
-          nextop = 0;
-          zerocounter = 0;
+          setDpc(1);
+          setPrevop(1);
+          setNextop(0);
+          setZeroc(0);
         }
       }
     }
@@ -66,20 +66,20 @@ function Calculator() {
       if (disp === '0') {
         if (anscounter !== 0) {
           setDisp('Ans');
-          nextop = 1;
+          setNextop(1);
         }
       }
       else {
         if(anscounter === 1 && prevop === 1 && dpcounter === 0 && minuscounter === 0) {
-          nextop = 1;
-          prevop = 0;
+          setNextop(1);
+          setPrevop(0);
           setDisp(disp+'Ans');
         }
       }
     }
   }
 
-  function operator(op) {
+  function onOperator(op) {
     if (!isNaN()) {
       switch(op) {
         case 'x':
@@ -88,17 +88,17 @@ function Calculator() {
           if (opcounter === 1) {
             if (prevop === 0) {
               compute(disp,op,2);
-              prevop = 1;
-              opcounter = 1;
+              setPrevop(1);
+              setOpc(1);
             }
           }
           else {
             if (prevop === 0) {
-              opcounter = 1;
-              prevop = 1;
-              dpcounter = 0;
-              minuscounter = 0;
-              nextop = 0;
+              setOpc(1);
+              setPrevop(1);
+              setDpc(0);
+              setMinusc(0);
+              setNextop(0);
               setDisp(disp+op);
             }
           }
@@ -107,17 +107,17 @@ function Calculator() {
           if (opcounter === 1) {
             if (prevop === 0) {
               compute(disp,op,2);
-              prevop = 1;
-              opcounter = 1;
+              setPrevop(1);
+              setOpc(1);
             }
           }
           else {
             if (prevop === 0) {
-              opcounter = 1;
-              prevop = 1;
-              dpcounter = 0;
-              minuscounter = 0;
-              nextop = 0;
+              setOpc(1);
+              setPrevop(1);
+              setDpc(0);
+              setMinusc(0);
+              setNextop(0);
               setDisp(disp+'\u00F7');
             }
           }
@@ -125,32 +125,32 @@ function Calculator() {
         case '-':
           if (disp === '0') {
             setDisp(op);
-            prevop = 1;
-            minuscounter = 1;
+            setPrevop(1);
+            setMinusc(1);
           }
           else {
             if (opcounter === 1) {
               if (prevop === 0) {
                 compute(disp,op,2);
-                prevop = 1;
-                opcounter = 1;
+                setPrevop(1);
+                setOpc(1);
               }
               else {
                 if (minuscounter === 0 && dpcounter === 0) {
                   setDisp(disp+op);
-                  prevop = 1;
-                  minuscounter = 1;
-                  nextop = 0;
+                  setPrevop(1);
+                  setMinusc(1);
+                  setNextop(0);
                 }
               }
             }
             else {
               if (prevop === 0) {
-                opcounter = 1;
-                prevop = 1;
-                dpcounter = 0;
-                minuscounter = 0;
-                nextop = 0;
+                setOpc(1);
+                setPrevop(1);
+                setDpc(0);
+                setMinusc(0);
+                setNextop(0);
                 setDisp(disp+op);
               }
             }
@@ -162,35 +162,35 @@ function Calculator() {
           }
           if (opcounter !== 0 && prevop === 0) {
             compute(disp,op,1);
-            prevop = 0;
-            opcounter = 0;
-            nextop = 1;
+            setPrevop(0);
+            setOpc(0);
+            setNextop(1);
           }
           else if (disp === 'Ans') {
             setDisp(result);
-            anscounter = 1;
-            minuscounter = 0;
-            nextop = 0;
-            dpcounter = 1;
+            setAnsc(1);
+            setMinusc(0);
+            setNextop(0);
+            setDpc(1);
           }
           else {
-            result = disp;
-            anscounter = 1;
+            setResult(disp);
+            setAnsc(1);
           }
       }
     }
   }
 
-  function num(inp) {
+  function onNumber(inp) {
     if (!isNaN()) {
       if (disp === '0') {
         setDisp(inp);
-        prevop = 0;
+        setPrevop(0);
       }
       else {
         if (nextop === 0 && zerocounter === 0) {
           setDisp(disp+inp);
-          prevop = 0;
+          setPrevop(0);
         }
       }
     }
@@ -204,12 +204,12 @@ function Calculator() {
       else if (nextop === 0) {
         if (dpcounter === 0 && prevop === 1) {
           setDisp(disp+'0');
-          prevop = 0;
-          zerocounter = 1;
+          setPrevop(0);
+          setZeroc(1);
         }
         if (zerocounter === 0) {
         setDisp(disp+'0');
-        prevop = 0;
+        setPrevop(0);
         }
       }
     }
@@ -233,15 +233,16 @@ function Calculator() {
       rhs = result;
     }
     
+    let tempResult;
     switch(mid) {
       case '+':
-        result = Number(lhs) + Number(rhs);
+        tempResult = Number(lhs) + Number(rhs);
         break;
       case '-':
-        result = Number(lhs) - Number(rhs);
+        tempResult = Number(lhs) - Number(rhs);
         break;
       case 'x':
-        result = Number(lhs) * Number(rhs);
+        tempResult = Number(lhs) * Number(rhs);
         break;
       case '\u00F7':
         if (rhs === '0') {
@@ -249,7 +250,7 @@ function Calculator() {
           return;
         }
         else {
-          result = Number(lhs) / Number(rhs);
+          tempResult = Number(lhs) / Number(rhs);
         }
         break;
       default:
@@ -258,24 +259,25 @@ function Calculator() {
           return;
         }
         else {
-          result = Number(lhs) ** Number(rhs);
+          tempResult = Number(lhs) ** Number(rhs);
         }
     }
 
-    result = Math.round((result + Number.EPSILON) * 100000000) / 100000000; /*restrict to 8d.p.*/
+    tempResult = Math.round((tempResult + Number.EPSILON) * 100000000) / 100000000; /*restrict to 8d.p.*/
+    setResult(tempResult);
 
     if (opcount === 2) {
       setDisp(result+futureop);
-      dpcounter = 0;
+      setDpc(0);
     }
     else {
       setDisp(result);
-      dpcounter = 1;
+      setDpc(1);
     }
-    anscounter = 1;
-    minuscounter = 0;
-    nextop = 0;
-    zerocounter = 0;
+    setAnsc(1);
+    setMinusc(0);
+    setNextop(0);
+    setZeroc(0);
   }
 
   return (
@@ -287,31 +289,31 @@ function Calculator() {
         <div className="row">
           <div className="calc-button"><button onClick={() => clear()}>AC</button></div>
           <div className="calc-button"><button onClick={() => ans()}>Ans</button></div>
-          <div className="calc-button"><button onClick={() => operator("^")}>&#119909;<sup>&#9744;</sup></button></div>
-          <div className="calc-button"><button onClick={() => operator("/")}>&#247;</button></div>
+          <div className="calc-button"><button onClick={() => onOperator("^")}>&#119909;<sup>&#9744;</sup></button></div>
+          <div className="calc-button"><button onClick={() => onOperator("/")}>&#247;</button></div>
         </div>
         <div className="row">
-          <div className="calc-button"><button onClick={() => num('7')}>7</button></div>
-          <div className="calc-button"><button onClick={() => num('8')}>8</button></div>
-          <div className="calc-button"><button onClick={() => num('9')}>9</button></div>
-          <div className="calc-button"><button onClick={() => operator("x")}>x</button></div>
+          <div className="calc-button"><button onClick={() => onNumber('7')}>7</button></div>
+          <div className="calc-button"><button onClick={() => onNumber('8')}>8</button></div>
+          <div className="calc-button"><button onClick={() => onNumber('9')}>9</button></div>
+          <div className="calc-button"><button onClick={() => onOperator("x")}>x</button></div>
         </div>
         <div className="row">
-          <div className="calc-button"><button onClick={() => num('4')}>4</button></div>
-          <div className="calc-button"><button onClick={() => num('5')}>5</button></div>
-          <div className="calc-button"><button onClick={() => num('6')}>6</button></div>
-          <div className="calc-button"><button onClick={() => operator("-")}>-</button></div>
+          <div className="calc-button"><button onClick={() => onNumber('4')}>4</button></div>
+          <div className="calc-button"><button onClick={() => onNumber('5')}>5</button></div>
+          <div className="calc-button"><button onClick={() => onNumber('6')}>6</button></div>
+          <div className="calc-button"><button onClick={() => onOperator("-")}>-</button></div>
         </div>
         <div className="row">
-          <div className="calc-button"><button onClick={() => num('1')}>1</button></div>
-          <div className="calc-button"><button onClick={() => num('2')}>2</button></div>
-          <div className="calc-button"><button onClick={() => num('3')}>3</button></div>
-          <div className="calc-button"><button onClick={() => operator("+")}>+</button></div>
+          <div className="calc-button"><button onClick={() => onNumber('1')}>1</button></div>
+          <div className="calc-button"><button onClick={() => onNumber('2')}>2</button></div>
+          <div className="calc-button"><button onClick={() => onNumber('3')}>3</button></div>
+          <div className="calc-button"><button onClick={() => onOperator("+")}>+</button></div>
         </div>
         <div className="row">
           <div id="zero-button"><button onClick={() => zero()}>0</button></div>
           <div className="calc-button"><button onClick={() => decimal()}>.</button></div>
-          <div className="calc-button"><button onClick={() => operator("=")}>=</button></div>
+          <div className="calc-button"><button onClick={() => onOperator("=")}>=</button></div>
         </div>
       </div>
     </div>
