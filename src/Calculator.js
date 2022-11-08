@@ -196,7 +196,7 @@ function Calculator() {
     }
   }
 
-  function zero() {
+  function onZero() {
     if (!isNaN()) {
       if (disp === '0') {
         return;
@@ -267,11 +267,11 @@ function Calculator() {
     setResult(tempResult);
 
     if (opcount === 2) {
-      setDisp(result+futureop);
+      setDisp(tempResult+futureop);
       setDpc(0);
     }
     else {
-      setDisp(result);
+      setDisp(tempResult);
       setDpc(1);
     }
     setAnsc(1);
@@ -311,7 +311,7 @@ function Calculator() {
           <div className="calc-button"><button onClick={() => onOperator("+")}>+</button></div>
         </div>
         <div className="row">
-          <div id="zero-button"><button onClick={() => zero()}>0</button></div>
+          <div id="zero-button"><button onClick={() => onZero()}>0</button></div>
           <div className="calc-button"><button onClick={() => decimal()}>.</button></div>
           <div className="calc-button"><button onClick={() => onOperator("=")}>=</button></div>
         </div>
